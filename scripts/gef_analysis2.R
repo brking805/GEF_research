@@ -7,9 +7,9 @@ P <- rprojroot::find_rstudio_root_file
 
 #import data
 require(readxl)
-gef6_data <- read_excel(P("data/data collection template.xlsx"), sheet=4)
-gef7_data<- read_excel(P("data/data collection template.xlsx"), sheet=3)
-exp_data<- readRDS("outputs/dataforexpenditure.RDS")
+gef6_data <- read_excel(P("data/data_collection_template.xlsx"), sheet=4)
+gef7_data<- read_excel(P("data/data_collection_template.xlsx"), sheet=3)
+exp_data<- readRDS("data/dataforexpenditure.RDS")
 
 #merge datasets
 gef_data <- merge(gef6_data, gef7_data, by= "Countries", all=TRUE)
@@ -22,6 +22,10 @@ gef_data <- gef_data %>%
   select(countries, GEF6, GEF7 )
 
 full_data <- merge(gef_data, exp_data, by= "countries", all=TRUE)
+full_data<- full_data %>%
+  mutate(ln_gef6 = log(GEF6), ln_gef7 =log(GEF7))
+
+write.csv(full_data, P("data/gef_analysis_data.csv"))
 
 #Regression using GEF 6
   #Rishman model
